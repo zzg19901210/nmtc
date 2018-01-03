@@ -7,9 +7,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -21,6 +25,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.ashokvarma.bottomnavigation.BottomNavigationBar;
+import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.tencent.smtt.export.external.interfaces.IX5WebChromeClient;
 import com.tencent.smtt.export.external.interfaces.JsResult;
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
@@ -36,6 +45,10 @@ import com.tencent.sonic.sdk.SonicEngine;
 import com.tencent.sonic.sdk.SonicSession;
 import com.tencent.sonic.sdk.SonicSessionConfig;
 
+import java.util.ArrayList;
+
+import cn.imfc.nmtc.fragment.HomeFragment;
+import cn.imfc.nmtc.fragment.WebX5Fragment;
 import cn.imfc.nmtc.sonic.SonicJavaScriptInterface;
 import cn.imfc.nmtc.sonic.SonicRuntimeImpl;
 import cn.imfc.nmtc.sonic.SonicSessionClientImpl;
@@ -54,7 +67,7 @@ import cn.imfc.nmtc.view.webview.utils.X5WebViewProgress;
  * \* Description:
  * \
  */
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements BottomNavigationBar.OnTabSelectedListener{
 
     public final static String PARAM_URL = "param_url";
 
@@ -76,6 +89,14 @@ public class MainActivity extends AppCompatActivity{
     private WebViewProgressBar progressBar;//进度条的矩形（进度线）
     private Handler handler;
 
+    private ArrayList<Fragment> fragments;
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
+
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -94,10 +115,47 @@ public class MainActivity extends AppCompatActivity{
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         setTileBar("首页");
-        init();
+        //init();
+        BottomNavigationBar bottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
+        bottomNavigationBar.setMode(BottomNavigationBar.MODE_FIXED);
+        bottomNavigationBar
+                .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC
+                );
+        bottomNavigationBar.addItem(new BottomNavigationItem(R.mipmap.ic_launcher, "主页").setActiveColorResource(R.color.primary_main))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_launcher, "资讯").setActiveColorResource(R.color.primary_main))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_launcher, "直播").setActiveColorResource(R.color.primary_main))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_launcher_round, "发现").setActiveColorResource(R.color.primary_main))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_launcher, "我").setActiveColorResource(R.color.primary_main))
+                .setFirstSelectedPosition(0)
+                .initialise();
 
+        fragments = getFragments();
+        setDefaultFragment();
+        bottomNavigationBar.setTabSelectedListener(this);
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
-    public void setTileBar(String title){
+
+    /** * 设置默认的 */
+    private void setDefaultFragment() {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        transaction.replace(R.id.layFrame, HomeFragment.newInstance("Home"));
+        transaction.commit();
+    }
+    private ArrayList<Fragment> getFragments() {
+        ArrayList<Fragment> fragments = new ArrayList<>();
+        fragments.add(HomeFragment.newInstance("Home"));
+        fragments.add(WebX5Fragment.newInstance("News"));
+        fragments.add(HomeFragment.newInstance("Live"));
+        fragments.add(WebX5Fragment.newInstance("Sifar"));
+        fragments.add(HomeFragment.newInstance("Me"));
+        return fragments;
+    }
+
+    public void setTileBar(String title) {
 
         boolean isImmersive = false;
 
@@ -172,7 +230,8 @@ public class MainActivity extends AppCompatActivity{
         //初始化handle
         handler = new Handler();
     }
-    public void init(){
+
+    public void init() {
 
         Intent intent = getIntent();
         mViewParent = (ViewGroup) findViewById(R.id.main_web_view);
@@ -183,7 +242,7 @@ public class MainActivity extends AppCompatActivity{
                 FrameLayout.LayoutParams.FILL_PARENT));
         initProgressBar();
 
-        String url="http://vote.lrkpzx.com/static/app/lottery_wechat/home_page.html";
+        String url = "http://vote.lrkpzx.com/static/app/lottery_wechat/home_page.html";
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
 
@@ -235,7 +294,6 @@ public class MainActivity extends AppCompatActivity{
         });
 
 
-
         WebSettings webSettings = webView.getSettings();
 
         // add java script interface
@@ -268,6 +326,7 @@ public class MainActivity extends AppCompatActivity{
         }
 
     }
+
     @Override
     public void onBackPressed() {
 
@@ -290,7 +349,7 @@ public class MainActivity extends AppCompatActivity{
             //webView.goBack(); // goBack()表示返回WebView的上一页面
             return true;
         }
-        return super.onKeyDown(keyCode,event);
+        return super.onKeyDown(keyCode, event);
     }
 
 
@@ -300,5 +359,84 @@ public class MainActivity extends AppCompatActivity{
 
     public static boolean hasLollipop() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Main Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://cn.imfc.nmtc/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Main Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://cn.imfc.nmtc/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
+    }
+
+    /**
+     * 设置监听选项点击事件
+     * @param position
+     */
+    @Override
+    public void onTabSelected(int position) {
+        if (fragments != null) {
+            if (position < fragments.size()) {
+                FragmentManager fm = getSupportFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                Fragment fragment = fragments.get(position);
+                if (fragment.isAdded()) {
+                    ft.replace(R.id.layFrame, fragment);
+                } else {
+                    ft.add(R.id.layFrame, fragment);
+                }
+                ft.commitAllowingStateLoss();
+            }
+        }
+    }
+
+    @Override
+    public void onTabUnselected(int position) {
+        if (fragments != null) {
+            if (position < fragments.size()) {
+                FragmentManager fm = getSupportFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                Fragment fragment = fragments.get(position);
+                ft.remove(fragment);
+                ft.commitAllowingStateLoss();
+            }
+        }
+    }
+
+    @Override
+    public void onTabReselected(int position) {
+
     }
 }

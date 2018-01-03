@@ -30,4 +30,7 @@ dependencies {
     compile 'com.android.support:design:26.+'
     compile 'com.just.agentweb:agentweb:3.0.0-rc'
     compile 'com.tencent.sonic:sdk:2.0.0'
+    compile 'com.ashokvarma.android:bottom-navigation-bar:1.2.0'
+
+    compile 'com.google.android.gms:play-services-appindexing:8.1.0'
 }

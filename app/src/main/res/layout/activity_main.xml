@@ -9,18 +9,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     </cn.imfc.nmtc.view.TitleBar>
-    <RelativeLayout
+    <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_weight="1"-->
+        <!--android:orientation="vertical" >-->
+
+        <!--<FrameLayout-->
+            <!--android:id="@+id/main_web_view"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"/>-->
+    <!--</RelativeLayout>-->
+    <FrameLayout
+        android:id="@+id/layFrame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical" >
-
-        <FrameLayout
-            android:id="@+id/main_web_view"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <com.ashokvarma.bottomnavigation.BottomNavigationBar
+            android:id="@+id/bottom_navigation_bar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </RelativeLayout>
-
-
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom">
+        </com.ashokvarma.bottomnavigation.BottomNavigationBar>
+    </FrameLayout>
 
 </LinearLayout>
