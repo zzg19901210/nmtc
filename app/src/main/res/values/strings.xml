@@ -13,4 +13,7 @@
     <string name="finish">完成</string>
     <string name="illegal_url">不合法的URL</string>
     <string name="edit">编辑</string>
+
+
+    <string name="version_name">1.0.1</string>
 </resources>

@@ -10,7 +10,10 @@ android {
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
-        ndk{abiFilters "armeabi", "armeabi-v7a", "x86", "mips"}
+        ndk{
+            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+        }
+
     }
     lintOptions{
         abortOnError false
@@ -21,6 +24,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+
 }
 
 dependencies {
@@ -28,9 +33,13 @@ dependencies {
 //    testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support:design:26.+'
-    compile 'com.just.agentweb:agentweb:3.0.0-rc'
-    compile 'com.tencent.sonic:sdk:2.0.0'
-    compile 'com.ashokvarma.android:bottom-navigation-bar:1.2.0'
+    compile 'com.just.agentweb:agentweb:3.0.0-rc'//agentweb封装
+    compile 'com.tencent.sonic:sdk:2.0.0'//腾讯sonicwebview缓冲
+    compile 'com.ashokvarma.android:bottom-navigation-bar:2.0.4' //底部导航
+    compile 'com.google.android.gms:play-services-appindexing:8.1.0'//谷歌商店更新
+//    compile 'com.tencent.bugly:crashreport:latest.release' //异常上报其中latest.release指代最新Bugly SDK版本号，也可以指定明确的版本号，例如2.1.9
+    compile 'com.tencent.bugly:crashreport_upgrade:latest.release'//自动更新
+    compile 'com.tencent.bugly:nativecrashreport:latest.release' //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
+    compile 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.4@aar'//权限申请框架
 
-    compile 'com.google.android.gms:play-services-appindexing:8.1.0'
 }
